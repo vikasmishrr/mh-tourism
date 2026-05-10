@@ -5,27 +5,9 @@ import TempleVideoCard from './TempleVideoCard'
 import FeedbackModal from './FeedbackModal'
 import './ar-vr-video-showcase.css'
 
-/** Lightweight chips — avoid extra `<video>` decoders (was freezing the tab). */
-function ExperienceChip({ abbreviation, label, active, onSelect }) {
-  return (
-    <button
-      type="button"
-      className={`ar-dest-card__exp-item${active ? ' ar-dest-card__exp-item--active' : ''}`}
-      onClick={onSelect}
-      aria-pressed={active}
-    >
-      <div className="ar-dest-card__exp-visual ar-dest-card__exp-visual--chip">
-        <span className="ar-dest-card__exp-abbr">{abbreviation}</span>
-      </div>
-      <span className="ar-dest-card__exp-label">{label}</span>
-    </button>
-  )
-}
-
 export default function ArVrVideoShowcase({
   onVideoPlaying,
   exploreUrl = 'https://example.com',
-  mapsSearchUrl = 'https://www.google.com/maps/search/Maharashtra+Tourism+Development+Corporation',
 }) {
   const { activeVideoId, setActiveVideo } = useVideoStore()
   const [detailsOpen, setDetailsOpen] = useState(true)
@@ -123,42 +105,12 @@ export default function ArVrVideoShowcase({
     fs?.call(v).catch(() => {})
   }
 
-  const handleSave = () => {
-    try {
-      localStorage.setItem('mtdc_experience_saved', String(Date.now()))
-    } catch {
-      /* ignore */
-    }
-  }
-
-  const handleShare = async () => {
-    const payload = { title: 'Maharashtra Tourism (MTDC)', url: window.location.href }
-    if (navigator.share) {
-      try {
-        await navigator.share(payload)
-      } catch {
-        /* cancelled */
-      }
-    } else {
-      try {
-        await navigator.clipboard.writeText(window.location.href)
-      } catch {
-        /* ignore */
-      }
-    }
-  }
-
   const openExternal = (url) => {
     if (url) window.open(url, '_blank', 'noopener,noreferrer')
   }
 
   return (
     <div className={`ar-vr-showcase${detailsOpen ? '' : ' ar-vr-showcase--minimal'}`}>
-      <header className="ar-vr-showcase__page-hud">
-        <span className="ar-vr-showcase__page-badge">{sceneVideoConfigs.length}</span>
-        <span className="ar-vr-showcase__page-title">AR Destination Details</span>
-      </header>
-
       <div className="ar-vr-showcase__ambient" aria-hidden />
 
       <div className="ar-dest-card">
@@ -194,19 +146,6 @@ export default function ArVrVideoShowcase({
             <p className="ar-dest-card__desc">
               Discover MTDC through cinematic clips — from vineyards and valleys to Mumbai&apos;s energy and waterfront adventures.
             </p>
-
-            <h2 className="ar-dest-card__section-title">Top Experiences</h2>
-            <div className="ar-dest-card__exp-row">
-              {sceneVideoConfigs.map((cfg) => (
-                <ExperienceChip
-                  key={cfg.id}
-                  abbreviation={cfg.experienceLabel.slice(0, 2).toUpperCase()}
-                  label={cfg.experienceLabel}
-                  active={cfg.id === activeVideoId}
-                  onSelect={() => setActiveVideo(cfg.id)}
-                />
-              ))}
-            </div>
 
             <div className="ar-dest-card__actions">
               <button type="button" className="ar-dest-card__btn ar-dest-card__btn--primary" onClick={() => openExternal(exploreUrl)}>
@@ -260,35 +199,6 @@ export default function ArVrVideoShowcase({
           </section>
         </div>
       </div>
-
-      <nav className="ar-dest-actions-bar" aria-label="Quick actions">
-        <button type="button" className="ar-dest-actions-bar__item" onClick={handleSave}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path
-              d="M20.84 4.61a5.5 5.5 0 00-7.79 0L12 5.67l-1.05-1.06a5.5 5.5 0 00-7.78 7.79L12 21.23l8.83-8.83a5.49 5.49 0 000-7.79z"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          Save
-        </button>
-        <button type="button" className="ar-dest-actions-bar__item" onClick={handleShare}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="18" cy="5" r="3" />
-            <circle cx="6" cy="12" r="3" />
-            <circle cx="18" cy="19" r="3" />
-            <path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 4.01" />
-          </svg>
-          Share
-        </button>
-        <button type="button" className="ar-dest-actions-bar__item" onClick={() => openExternal(mapsSearchUrl)}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1118 0z" />
-            <circle cx="12" cy="10" r="3" />
-          </svg>
-          Navigate
-        </button>
-      </nav>
 
       <FeedbackModal open={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
     </div>

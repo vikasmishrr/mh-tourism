@@ -14,12 +14,15 @@ const DIMENSIONS = [
   { key: 'service', label: 'Staff & service', hint: 'Helpfulness & responsiveness' },
 ]
 
-function StarRow({ value, onChange, label, hint }) {
+function StarRow({ value, onChange, label, hint, required }) {
   return (
     <div className="fb-row">
-      <span className="fb-row__label">{label}</span>
+      <span className="fb-row__label">
+        {label}
+        {required ? <span className="fb-row__req">Required</span> : null}
+      </span>
       <span className="fb-row__hint">{hint}</span>
-      <div className="fb-stars" role="group" aria-label={label}>
+      <div className="fb-stars" role="group" aria-label={label} aria-required={required}>
         {[1, 2, 3, 4, 5].map((n) => (
           <button
             key={n}
@@ -96,67 +99,76 @@ export default function FeedbackModal({ open, onClose }) {
       <div className="fb-panel" role="dialog" aria-modal="true" aria-labelledby="fb-dialog-title">
         {!submitted ? (
           <>
-            <div className="fb-panel__head">
-              <div>
+            <header className="fb-panel__head">
+              <div className="fb-panel__intro">
                 <h2 id="fb-dialog-title" className="fb-panel__title">
                   Resort feedback
                 </h2>
-                <p className="fb-panel__sub">How was your stay? Rate each area below (1–5 stars).</p>
+                <p className="fb-panel__sub">
+                  Rate each area from 1–5 stars. All sections below are required before you can submit.
+                </p>
               </div>
               <button type="button" className="fb-close" onClick={onClose} aria-label="Close feedback">
                 ×
               </button>
+            </header>
+
+            <div className="fb-panel__body">
+              <form id="fb-form" className="fb-form" onSubmit={handleSubmit}>
+                {DIMENSIONS.map((d) => (
+                  <StarRow
+                    key={d.key}
+                    label={d.label}
+                    hint={d.hint}
+                    required
+                    value={scores[d.key]}
+                    onChange={(n) => setScores((s) => ({ ...s, [d.key]: n }))}
+                  />
+                ))}
+
+                <div className="fb-row fb-row--optional">
+                  <label className="fb-row__label" htmlFor="fb-comment">
+                    Anything else?
+                    <span className="fb-row__tag">Optional</span>
+                  </label>
+                  <span className="fb-row__hint">Suggestions, shout-outs, issues…</span>
+                  <textarea
+                    id="fb-comment"
+                    className="fb-textarea"
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="Tell us what stood out…"
+                    maxLength={1200}
+                  />
+                </div>
+              </form>
             </div>
 
-            <form onSubmit={handleSubmit}>
-              {DIMENSIONS.map((d) => (
-                <StarRow
-                  key={d.key}
-                  label={d.label}
-                  hint={d.hint}
-                  value={scores[d.key]}
-                  onChange={(n) => setScores((s) => ({ ...s, [d.key]: n }))}
-                />
-              ))}
-
-              <div className="fb-row">
-                <label className="fb-row__label" htmlFor="fb-comment">
-                  Anything else?
-                </label>
-                <span className="fb-row__hint">Optional — suggestions, shout-outs, issues…</span>
-                <textarea
-                  id="fb-comment"
-                  className="fb-textarea"
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  placeholder="Tell us what stood out…"
-                  maxLength={1200}
-                />
-              </div>
-
-              <div className="fb-actions">
-                <button type="submit" className="fb-submit" disabled={!allRated}>
-                  Submit feedback
-                </button>
-              </div>
-            </form>
+            <footer className="fb-panel__footer">
+              <p className="fb-panel__hint-foot" role="status">
+                {!allRated ? 'Complete all star ratings to enable submit.' : 'Ready to send.'}
+              </p>
+              <button type="submit" form="fb-form" className="fb-submit" disabled={!allRated}>
+                Submit feedback
+              </button>
+            </footer>
           </>
         ) : (
           <>
-            <div className="fb-panel__head">
-              <div className="fb-thanks" style={{ padding: '8px 0', textAlign: 'left', width: '100%' }}>
+            <header className="fb-panel__head">
+              <div className="fb-panel__intro fb-thanks">
                 <strong id="fb-dialog-title">Thank you!</strong>
-                <p className="fb-panel__sub" style={{ margin: 0 }}>
-                  Your ratings help MTDC improve every stay.
-                </p>
+                <p className="fb-panel__sub">Your ratings help MTDC improve every stay.</p>
               </div>
               <button type="button" className="fb-close" onClick={onClose} aria-label="Close">
                 ×
               </button>
+            </header>
+            <div className="fb-panel__body fb-panel__body--thanks">
+              <button type="button" className="fb-submit" onClick={onClose}>
+                Done
+              </button>
             </div>
-            <button type="button" className="fb-submit" onClick={onClose}>
-              Done
-            </button>
           </>
         )}
       </div>

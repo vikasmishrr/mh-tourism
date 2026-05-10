@@ -112,85 +112,17 @@ function App() {
     }
   }, [cameraStream])
 
-  // Force scene container to stay small - override any SDK sizing
+  // Canvas sizing only — scene layout is CSS (fullscreen phones vs floating desktop)
   useEffect(() => {
     const enforceSceneSize = () => {
-      // Target the scene container div (the one wrapping Scene component)
-      const sceneContainer = document.querySelector('.scene-container')
-      const canvasOverlay = document.querySelector('.canvas-overlay')
       const canvasElements = document.querySelectorAll('canvas')
-      
-      // Calculate size based on viewport
-      const vw = window.innerWidth
-      const vh = window.innerHeight
-      const isPortrait = vh > vw
-      const isSmall = vw < 480
-      
-      const safeBottom =
-        'env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px) + 20px'
-      let targetWidth = '94%'
-      let targetHeight = 'auto'
-      let maxW = 'min(680px, 96vw)'
-      let maxH = `min(860px, calc(100dvh - ${safeBottom}))`
-
-      let topPct = '44%'
-      let translateY = '-53%'
-
-      if (!isPortrait) {
-        targetWidth = '82%'
-        maxW = 'min(760px, 92vw)'
-        maxH = `min(600px, calc(100dvh - ${safeBottom}))`
-        topPct = '48%'
-        translateY = '-50%'
-      } else if (isSmall) {
-        targetWidth = '96%'
-        maxW = 'min(640px, 98vw)'
-        maxH = `min(840px, calc(100dvh - ${safeBottom}))`
-        topPct = '42%'
-        translateY = '-56%'
-      } else {
-        topPct = '43%'
-        translateY = '-55%'
-      }
-
-      if (sceneContainer) {
-        sceneContainer.style.setProperty('width', targetWidth, 'important')
-        sceneContainer.style.setProperty('height', targetHeight, 'important')
-        sceneContainer.style.setProperty('max-width', maxW, 'important')
-        sceneContainer.style.setProperty('max-height', maxH, 'important')
-        sceneContainer.style.setProperty('position', 'absolute', 'important')
-        sceneContainer.style.setProperty('top', topPct, 'important')
-        sceneContainer.style.setProperty('left', '50%', 'important')
-        sceneContainer.style.setProperty(
-          'transform',
-          `translate(-50%, ${translateY})`,
-          'important'
-        )
-        sceneContainer.style.setProperty('margin', '0', 'important')
-        sceneContainer.style.setProperty('padding', '0', 'important')
-        sceneContainer.style.setProperty('padding-bottom', '12px', 'important')
-        sceneContainer.style.setProperty('box-sizing', 'border-box', 'important')
-        sceneContainer.style.setProperty('overflow-y', 'auto', 'important')
-        sceneContainer.style.setProperty('overflow-x', 'hidden', 'important')
-        sceneContainer.style.setProperty('-webkit-overflow-scrolling', 'touch', 'important')
-      }
-      
-      // Also enforce canvas-overlay if it exists
-      if (canvasOverlay) {
-        canvasOverlay.style.setProperty('width', targetWidth, 'important')
-        canvasOverlay.style.setProperty('height', targetHeight, 'important')
-        canvasOverlay.style.setProperty('max-width', maxW, 'important')
-        canvasOverlay.style.setProperty('max-height', maxH, 'important')
-        canvasOverlay.style.setProperty('position', 'absolute', 'important')
-        canvasOverlay.style.setProperty('top', '50%', 'important')
-        canvasOverlay.style.setProperty('left', '50%', 'important')
-        canvasOverlay.style.setProperty('transform', 'translate(-50%, -50%)', 'important')
-      }
-      
-      // Ensure canvas elements don't exceed container
-      canvasElements.forEach(canvas => {
-        if (canvas.style.width === '100vw' || canvas.style.height === '100vh' || 
-            canvas.width === window.innerWidth || canvas.height === window.innerHeight) {
+      canvasElements.forEach((canvas) => {
+        if (
+          canvas.style.width === '100vw' ||
+          canvas.style.height === '100vh' ||
+          canvas.width === window.innerWidth ||
+          canvas.height === window.innerHeight
+        ) {
           canvas.style.setProperty('width', '100%', 'important')
           canvas.style.setProperty('height', '100%', 'important')
           canvas.style.setProperty('max-width', '100%', 'important')
@@ -352,29 +284,7 @@ function App() {
 
       {/* 3D Scene - render even if camera not ready */}
       {!loading && !error && !showRenderTest && (
-        <div 
-          className="scene-container"
-          style={{ 
-            position: 'absolute',
-            top: '43%',
-            left: '50%',
-            transform: 'translate(-50%, -55%)',
-            width: '94%',
-            height: 'auto',
-            maxWidth: 'min(680px, 96vw)',
-            maxHeight: 'min(860px, calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 20px))',
-            zIndex: 10,
-            pointerEvents: 'auto',
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            WebkitOverflowScrolling: 'touch',
-            minWidth: '280px',
-            minHeight: '280px',
-            margin: '0',
-            padding: '0',
-            paddingBottom: '12px',
-            boxSizing: 'border-box',
-          }}>
+        <div className="scene-container">
           <Scene />
         </div>
       )}
