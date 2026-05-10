@@ -10,7 +10,6 @@ export default function ArVrVideoShowcase({
   exploreUrl = 'https://example.com',
 }) {
   const { activeVideoId, setActiveVideo } = useVideoStore()
-  const [detailsOpen, setDetailsOpen] = useState(true)
   const [feedbackOpen, setFeedbackOpen] = useState(false)
   const mainVideoRef = useRef(null)
   const filmstripRef = useRef(null)
@@ -110,32 +109,12 @@ export default function ArVrVideoShowcase({
   }
 
   return (
-    <div className={`ar-vr-showcase${detailsOpen ? '' : ' ar-vr-showcase--minimal'}`}>
+    <div className="ar-vr-showcase">
       <div className="ar-vr-showcase__ambient" aria-hidden />
 
       <div className="ar-dest-card">
-        {!detailsOpen && (
-          <button
-            type="button"
-            className="ar-dest-card__restore"
-            onClick={() => setDetailsOpen(true)}
-            aria-label="Show details"
-          >
-            ☰ Details
-          </button>
-        )}
-        <button
-          type="button"
-          className="ar-dest-card__close"
-          onClick={() => setDetailsOpen((o) => !o)}
-          aria-label={detailsOpen ? 'Collapse details panel' : 'Expand details'}
-          aria-expanded={detailsOpen}
-        >
-          <span aria-hidden>×</span>
-        </button>
-
         <div className="ar-dest-card__grid">
-          <aside className={`ar-dest-card__info${detailsOpen ? '' : ' ar-dest-card__info--hidden'}`}>
+          <aside className="ar-dest-card__info">
             <h1 className="ar-dest-card__title">Maharashtra Tourism</h1>
             <p className="ar-dest-card__tagline">Nature&apos;s balconies, vibrant cities &amp; serene escapes.</p>
             <div className="ar-dest-card__rating" aria-label="rating">

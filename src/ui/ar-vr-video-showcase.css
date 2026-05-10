@@ -1,7 +1,6 @@
 /* AR Destination Details — glass split card + filmstrip */
 
 .ar-vr-showcase {
-  --edge: rgba(255, 255, 255, 0.42);
   /* No perspective tilt here — it caused box-shadow to render as an axis-aligned “square” behind rounded corners */
   width: 100%;
   max-width: min(680px, 100%);
@@ -31,7 +30,7 @@
   margin: 0;
   padding: clamp(14px, 3.5vw, 20px);
   background: transparent;
-  border: 1px solid var(--edge);
+  border: none;
   /* No box-shadow — WebKit often paints it as a dark axis-aligned box behind rounded corners */
   box-shadow: none;
   flex: 1;
@@ -43,57 +42,13 @@
   backface-visibility: hidden;
 }
 
-.ar-dest-card__close {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  z-index: 5;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background: rgba(0, 0, 0, 0.25);
-  color: #fff;
-  font-size: 22px;
-  line-height: 1;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  touch-action: manipulation;
-}
-
-.ar-dest-card__restore {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  z-index: 6;
-  padding: 8px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background: rgba(0, 0, 0, 0.35);
-  color: #fff;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  touch-action: manipulation;
-}
-
-.ar-vr-showcase:not(.ar-vr-showcase--minimal) .ar-dest-card__restore {
-  display: none;
-}
-
-.ar-vr-showcase--minimal .ar-dest-card__close {
-  display: none;
-}
-
 .ar-dest-card__grid {
   position: relative;
   z-index: 1;
   display: grid;
   grid-template-columns: 1fr;
   gap: clamp(14px, 3vw, 20px);
-  padding-top: 28px;
+  padding-top: clamp(12px, 3vw, 18px);
   flex: 1;
   min-height: 0;
   overflow: hidden;
@@ -107,9 +62,6 @@
     grid-template-rows: minmax(0, 1fr);
   }
 
-  .ar-vr-showcase--minimal .ar-dest-card__grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* Mobile: full-viewport card, no vertical scroll (must follow base .ar-dest-card__grid grid rules) */
@@ -120,7 +72,7 @@
     flex: 1;
     min-height: 0;
     overflow: hidden;
-    padding-top: 36px;
+    padding-top: 14px;
     gap: 10px;
   }
 
@@ -145,10 +97,6 @@
     overflow: hidden;
     max-height: min(46vh, 420px);
   }
-}
-
-.ar-dest-card__info--hidden {
-  display: none !important;
 }
 
 /* Legible on live camera with no frosted layer */
@@ -387,15 +335,6 @@
 }
 
 @media (max-width: 599px) {
-  .ar-dest-card__close {
-    top: 8px;
-    left: 8px;
-  }
-
-  .ar-dest-card__grid {
-    padding-top: 36px;
-  }
-
   .ar-dest-card__media {
     order: 1;
   }
