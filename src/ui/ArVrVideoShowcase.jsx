@@ -7,7 +7,7 @@ import './ar-vr-video-showcase.css'
 
 export default function ArVrVideoShowcase({
   onVideoPlaying,
-  exploreUrl = 'https://example.com',
+  exploreUrl = 'https://fascinolibrary.com/fascinolib/#/site/mk-stalin',
 }) {
   const { activeVideoId, setActiveVideo } = useVideoStore()
   const [feedbackOpen, setFeedbackOpen] = useState(false)
@@ -123,7 +123,7 @@ export default function ArVrVideoShowcase({
               <span className="ar-dest-card__rating-count">(2.1k)</span>
             </div>
             <p className="ar-dest-card__desc">
-              Discover MTDC through cinematic clips — from vineyards and valleys to Mumbai&apos;s energy and waterfront adventures.
+              Discover Maharashtra through cinematic clips — from Mumbai in English to Kamshet, monsoon landscapes, adventure, and Kolad.
             </p>
 
             <div className="ar-dest-card__actions">
